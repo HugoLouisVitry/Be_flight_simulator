@@ -12,8 +12,8 @@ on_die_proc ) # called when the agent dies
 IvyStart ( ivy_bus )
 
 ###Test des constantes
-PConstanteVirage = "Valeur"
-PconstanteLigneDroite = "Valeur"
+PConstanteVirage = 0.5
+PconstanteLigneDroite = 0
 
 
 ### Envoie message Ivy
@@ -25,5 +25,5 @@ IvyInit (" IvyApp ", " Ready ", 0 , null_cb , null_cb )
 IvyStart (" 127.255.255.255:2010 ")
 # attente pour qu ’ivy s’ initialise correctement
 time . sleep (1.0)
-IvySendMsg (" mot1 = Bonjour mot2 = Ivy ")
+IvySendMsg (" PConstanteVirage = 0.5 PconstanteLigneDroite = 0  ")
 IvyStop ()
