@@ -1,9 +1,12 @@
 # Imports
-
+import time
 import ivy.std_api as ivy
 import pygame
 
 clock_interval = 30
+
+
+#==========MANCHE=========================#
 Pmax=50
 nzmax=2
 
@@ -30,7 +33,7 @@ def from_stick():
                 joystick = pygame.joystick.Joystick(event.device_index)
                 if not init:
                     init_info(joystick)
-                print(f"Joystick {joystick.get_instance_id()} connencted")
+                print(f"Joystick {joystick.get_instance_id()} connected")
 
             if event.type == pygame.JOYDEVICEREMOVED:
                 del joystick[event.instance_id]
@@ -58,13 +61,6 @@ def from_stick():
         ivyShare(nz,p,AP_off)
         clock.tick(clock_interval)
 
-def ivyShare(nz,p,AP_off):
-    """Envoi des messages sur le bus ivy"""
-    print(f"p : {p}\t nz : {nz}\t AP : {AP_off}\n")
-    #envoyer "MancheAP push" a quentin ( no args )
-    #envoyer "MancheCmdAxes nz= p="
-    pass
-    
 
 def init_info(joystick):
     print(f"Manette initialisé : {joystick.get_init()}\n")
@@ -75,11 +71,33 @@ def init_info(joystick):
     print(f"Manette hats : {joystick.get_numhats()}\n")  
     return 
    
+def on_cx_proc(agent, connected):
+    pass
 
+def on_die_proc(agent,_id):
+    pass
 
+app_name = "Manche"
+ivy_bus = "127.255.255.255:2010" # adresse de broadcast sur le port 2010
 
-if __name__ == '__main__':
+ivy.IvyInit( app_name , "[%s ready ]" % app_name , 0, on_cx_proc ,on_die_proc ) 
+ivy.IvyStart ( ivy_bus )
+time.sleep(1.0)
+
+def ivyShare(nz,p,AP_off):
+    """Envoi des messages sur le bus ivy"""
+    print(f"p : {p}\t nz : {nz}\t AP : {AP_off}\n") #debug
+    
+    if AP_off:
+        ivy.IvySendMsg("MancheAP push")
+    ivy.IvySendMsg(f"MancheCmdAxes nz={nz} p={p}") 
+    ivy.IvySendMsg("Ping") 
+    #ivy.IvyStop()
+
+def launch():
     from_stick()
     # If you forget this line, the program will 'hang'
     # on exit if running from IDLE.    
     pygame.quit()
+
+launch()
