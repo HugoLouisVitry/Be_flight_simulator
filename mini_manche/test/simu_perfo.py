@@ -1,5 +1,9 @@
 import ivy.std_api as ivy
 
+def on_cx_proc (agent , connected ) :
+    pass
+def on_die_proc (agent , _id ):
+    pass
 
 ### Ivy Bus
 app_name = " MyIvyApplication "
@@ -14,9 +18,9 @@ IvyStart ( ivy_bus )
 ###Test des constantes
 
 
-NxConstanteMaxManche = "Valeur"
-NyConstanteMaxManche = "Valeur"
-PConstanteMaxManche = "Valeur"
+nx = "Valeur"
+nz = "Valeur"
+pmax = "Valeur"
 
 
 ### Envoie message Ivy
@@ -28,5 +32,5 @@ IvyInit (" IvyApp ", " Ready ", 0 , null_cb , null_cb )
 IvyStart (" 127.255.255.255:2010 ")
 # attente pour qu ’ivy s’ initialise correctement
 time . sleep (1.0)
-IvySendMsg (" NxConstanteMaxManche = Valeur NyConstanteMaxManche = Valeur PConstanteMaxManche = Valeur ")
+IvySendMsg (" nx = Valeur nz = Valeur pmax = Valeur ")
 IvyStop ()
