@@ -7,7 +7,7 @@ clock_interval = 30
 
 
 #==========MANCHE=========================#
-Pmax=50
+Pmax=20
 nzmax=2
 
 pygame.init()
@@ -57,6 +57,8 @@ def from_stick():
         p = brut_p * Pmax
         AP_off = gachette
         
+        if abs(p) <= 3 :
+            p = 0
         #Envoi sur ivy
         ivyShare(nz,p,AP_off)
         clock.tick(clock_interval)
