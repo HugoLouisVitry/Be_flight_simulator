@@ -2,12 +2,12 @@
 import time
 import ivy.std_api as ivy
 import pygame
-from math import pi
+from math import pi, radians
 clock_interval = 30
 
 
 #==========MANCHE=========================#
-Pmax=pi/12 # 15 degrés/sec
+Pmax= radians(5) # 5 degrés/sec
 nzmax=1
 
 pygame.init()
