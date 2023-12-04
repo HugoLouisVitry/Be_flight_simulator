@@ -1,0 +1,3 @@
+[submodule "FGS/min-avi-fgs"]
+	path = FGS/min-avi-fgs
+	url = git@github.com:SELB1/min-avi-fgs.git

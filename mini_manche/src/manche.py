@@ -91,7 +91,6 @@ def ivyShare(nz,p,AP_off):
     if AP_off:
         ivy.IvySendMsg("MancheAP push")
     ivy.IvySendMsg(f"MancheCmdAxes nz={nz} p={p}") 
-    ivy.IvySendMsg("Ping") 
     #ivy.IvyStop()
 
 def launch():
