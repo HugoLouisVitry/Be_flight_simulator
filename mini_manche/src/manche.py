@@ -2,13 +2,13 @@
 import time
 import ivy.std_api as ivy
 import pygame
-
+from math import pi, radians
 clock_interval = 30
 
 
 #==========MANCHE=========================#
-Pmax=50
-nzmax=2
+Pmax= radians(5) # 5 degrés/sec
+nzmax=1
 
 pygame.init()
 
@@ -50,15 +50,23 @@ def from_stick():
         bouton_droit=joystick.get_button(2) # change nx , flap ??
         
         #Debug
-       # print(f"p : {brut_p}\t nz : {brut_nz}\t nx : {brut_nx}\t Gachette : {gachette}\t BGauche : {bouton_gauche}\t BDroit : {bouton_droit}\n")
-        
+        # print(f"bp : {brut_p}\t bnz : {brut_nz}\t bnx : {brut_nx}\t bGachette : {gachette}\t bBGauche : {bouton_gauche}\t bBDroit : {bouton_droit}\n")
+            # ivy.IvyBindMsg(from_stick,"Time t=(\S+)")
+
         #Traitement de l'information
         nz = brut_nz*nzmax
-        p = brut_p * Pmax
+        p = brut_p * Pmax    # ivy.IvyBindMsg(from_stick,"Time t=(\S+)")
+
         AP_off = gachette
         
+        if abs(brut_p) <= 0.1 :
+            p = 0
+        if abs(brut_nz) <= 0.1 :
+            nz = 0
         #Envoi sur ivy
-        ivyShare(nz,p,AP_off)
+
+        ivyShare(nz+1,p,AP_off)
+    
         clock.tick(clock_interval)
 
 
@@ -77,12 +85,8 @@ def on_cx_proc(agent, connected):
 def on_die_proc(agent,_id):
     pass
 
-app_name = "Manche"
-ivy_bus = "127.255.255.255:2010" # adresse de broadcast sur le port 2010
 
-ivy.IvyInit( app_name , "[%s ready ]" % app_name , 0, on_cx_proc ,on_die_proc ) 
-ivy.IvyStart ( ivy_bus )
-time.sleep(1.0)
+    
 
 def ivyShare(nz,p,AP_off):
     """Envoi des messages sur le bus ivy"""
@@ -91,10 +95,16 @@ def ivyShare(nz,p,AP_off):
     if AP_off:
         ivy.IvySendMsg("MancheAP push")
     ivy.IvySendMsg(f"MancheCmdAxes nz={nz} p={p}") 
-    ivy.IvySendMsg("Ping") 
     #ivy.IvyStop()
 
 def launch():
+    app_name = "Manche"
+    ivy_bus = "127.255.255.255:2010" # adresse de broadcast sur le port 2010
+
+    ivy.IvyInit( app_name , "[%s ready ]" % app_name , 0, on_cx_proc ,on_die_proc ) 
+    ivy.IvyStart ( ivy_bus )
+    time.sleep(1.0)
+    # ivy.IvyBindMsg(from_stick,"Time t=(\S+)")
     from_stick()
     # If you forget this line, the program will 'hang'
     # on exit if running from IDLE.    
