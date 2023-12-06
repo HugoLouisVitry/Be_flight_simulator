@@ -22,8 +22,8 @@ A destination du FCU:
 - `^FCUAP1 off`
 
 A destination du FGS : 
-+ `MancheFlap f=(S+)`
-+ `MancheLdg ldg=(S+)` 
++ `MancheFlap f=(\S+)`
++ `MancheLdg ldg=(\S+)` 
 
 Pour les landings gears : 0 rentré , 1 déployé 
 
