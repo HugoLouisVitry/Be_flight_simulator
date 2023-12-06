@@ -14,6 +14,9 @@ def on_cx_proc(agent, connected):
 def on_die_proc(agent, _id):
     pass
 
+# Constante
+Dt = 1 # Constante de temps pour lisser la limitation dû à phi
+
 # Variable globale
 autoPiloteStatus = "off"
 nz_manche = 1. # Commande brute
@@ -22,6 +25,7 @@ nz_max = 1. # Limite brute
 nz_min = 1. # Limite brute
 phi_limite_FGS = math.pi/4 # en radians
 p_limite_FGS = math.pi/16 # en radians/s
+phi = 0. # en radians
 
 # Fonction message
 def on_MancheAP(agent, *larg): # Désactive l'autopilote en cas d'appuie du bouton au manche
@@ -52,7 +56,9 @@ def on_RollLimits(agent,*larg):
     phi_limite_FGS = math.radians(larg[0]) # Convertion deg -> rad nécessaire
     p_limite_FGS = math.radians(larg[1])
 
-
+def on_StateVector(agent,*larg): # Stocke la valeur de phi
+    global phi
+    phi = float(larg[6])
 
 def on_APLongNxControl(agent, *larg): # Transmet directement la commande nx au modèle avion
     nx = float(larg[0])
@@ -70,8 +76,16 @@ def on_APLatpControl(agent,*larg):
     p_AP = float(larg[0])
     if autoPiloteStatus == "on":
         p = p_AP
-    else:
-        p = max(-p_limite_FGS,min(p_limite_FGS,p_manche)) # N'inclus pas la limitation en phi , que en p
+    else: # Commande manuel
+        p_limit_neg = max(-p_limite_FGS, (-phi_limite_FGS - phi)/Dt)
+        p_limit_pos = min(p_limite_FGS, (phi_limite_FGS - phi)/Dt)
+        p = max(p_limit_neg,min(p_limit_pos,p_manche))
+
+        if phi < -phi_limite_FGS:
+            p = - phi_limite_FGS - phi
+        elif phi > phi_limite_FGS:
+            p = phi_limite_FGS - phi
+
     ivy.IvySendMsg(f"APLatControl rollRate={p}")
             
 
