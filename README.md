@@ -17,13 +17,13 @@ Commande pour le modèle avion :
 
 Commande pour le FCU:
 - `^FCUAP1 push`
-- `FCUAP1 off`
+- `^FCUAP1 off`
 
 
 Message du PA-Long : 
-+ `APLongNzControl nz=(\S+)`
-+ `APLongNxControl nx=(\S+)`
++ `^APLongNzControl nz=(\S+)`
++ `^APLongNxControl nx=(\S+)`
 
 
 Message du PA-Lat:
-+ `APLatpControl p=(\S+)`
++ `^APLatpControl p=(\S+)`
