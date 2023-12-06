@@ -11,12 +11,19 @@ Si vous aviez déjà cloné le repo faites plutot :
 # Messages IVY envoyé par le mini manche :
 
 Commande pour le modèle avion :
-- ^APNxControl nx=(\S+)
-- ^APNzControl nz=(\S+)
-- ^APLatControl rollRate=(\S+)
+- `^APNxControl nx=(\S+)`
+- `^APNzControl nz=(\S+)`
+- `^APLatControl rollRate=(\S+)`
 
 Commande pour le FCU:
-- ^FCUAP1 push
-- FCUAP1 off
+- `^FCUAP1 push`
+- `FCUAP1 off`
 
 
+Message du PA-Long : 
++ `APLongNzControl nz=(\S+)`
++ `APLongNxControl nx=(\S+)`
+
+
+Message du PA-Lat:
++ `APLatpControl p=(\S+)`
