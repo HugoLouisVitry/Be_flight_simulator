@@ -9,7 +9,7 @@ def on_die_proc (agent , _id ):
     pass
 def on_time(agent, *larg):
     IvySendMsg("PConstanteVirage=0.5 PConstanteLigneDroite=0")
-    IvySendMsg ("NxConstante=1.15 NzConstante=0.95")
+    IvySendMsg ("nx=1.15 =0.95")
     
 app_name = "Minimanchetestpa"
 ivy_bus = "127.255.255.255:2010"

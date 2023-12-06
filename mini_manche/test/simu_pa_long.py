@@ -8,13 +8,16 @@ def on_die_proc (agent , _id ):
     pass
 def on_time(agent, *larg):
     if float(larg[0]) < 10:
-        p=0.1
+        nx=3
+        nz=3
     elif 20<float(larg[0])<30:
-        p=-0.1
-    else: p=0
+        nx=0.001
+        nz=0.001
+    else: 
+        nx, nz= 1,1
+    
 
-    IvySendMsg("NxConstante=1.15 NzConstante=0.95")
-    IvySendMsg (f"Pcst p={p}")
+    IvySendMsg(f"Nxcste nx={nx} Nzcste nz={nz}")
 
 app_name = "Minimanchetestlongi"
 ivy_bus = "127.255.255.255:2010"
@@ -29,8 +32,7 @@ IvyBindMsg(on_time, '^Time t=(.*)')
 ###Test des constantes
 NxConstante = 1.15
 NzConstante = 0.95
-PConstanteVirage=0.5
-PconstanteLigneDroite=0
+
 
 # attente pour qu ’ivy s’ initialise correctement
 time . sleep (1.0)
