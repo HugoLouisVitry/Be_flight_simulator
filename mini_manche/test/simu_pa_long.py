@@ -16,8 +16,13 @@ def on_time(agent, *larg):
     else: 
         nx, nz= 1,1
     
-
     IvySendMsg(f"Nxcste nx={nx} Nzcste nz={nz}")
+
+def on_message(agent, *larg):
+    IvySendMsg ("APNxControl nx=1")
+    IvySendMsg ("APNzControl nz=1")
+
+   
 
 app_name = "Minimanchetestlongi"
 ivy_bus = "127.255.255.255:2010"
@@ -28,15 +33,10 @@ on_cx_proc , # called on cx/ disconnect
 on_die_proc ) # called when the agent dies
 IvyStart ( ivy_bus )
 IvyBindMsg(on_time, '^Time t=(.*)')
+IvyBindMsg(on_message, "^StateVector x=(\S+) y=(\S+) z=(\S+) Vp=(\S+) fpa=(\S+) psi=(\S+) phi=(\S+)")
 
-###Test des constantes
-NxConstante = 1.15
-NzConstante = 0.95
 
 
 # attente pour qu ’ivy s’ initialise correctement
 time . sleep (1.0)
-IvySendMsg ("NxConstante=1.15 NzConstante=0.95")
-#IvySendMsg (f"Pcst p={p}")
-IvyMainLoop()
-IvyStop ()
+

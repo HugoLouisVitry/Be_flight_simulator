@@ -36,14 +36,6 @@ on_die_proc ) # called when the agent dies
 IvyStart ( ivy_bus )
 IvyBindMsg(on_time, '^Time t=(.*)')
 
-###Test des constantes
-
-
-nx_neg = "1"
-nz_neg = "1"
-nx_pos= "1"
-nz_pos="1"
-
 
 ### Envoie message Ivy
 
@@ -52,6 +44,6 @@ def null_cb (*a):
 
 # attente pour qu ’ivy s’ initialise correctement
 time . sleep (1.0)
-IvySendMsg ("^LimitsN nx_neg=(1) nx_pos=(1) nz_neg=(1) nz_pos=(1) ")
+IvySendMsg ("^LimitsN nx_neg=1 nx_pos=1 nz_neg=1 nz_pos=1 ")
 IvyMainLoop()
 IvyStop ()
