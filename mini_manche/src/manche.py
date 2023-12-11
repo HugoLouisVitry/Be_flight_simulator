@@ -39,7 +39,6 @@ def from_stick(agent, *larg):
 
     #Debug
     # print(f"bp : {brut_p}\t bnz : {brut_nz}\t bnx : {brut_nx}\t bGachette : {gachette}\t bBGauche : {bouton_gauche}\t bBDroit : {bouton_droit}\n")
-        # ivy.IvyBindMsg(from_stick,"Time t=(\S+)")
 
     #Traitement de l'information
     global nz
@@ -77,14 +76,20 @@ def on_die_proc(agent,_id):
     pass
 
 app_name = "Manche"
-ivy_bus = "127.255.255.255:2010"
+default_ivy_bus = "127.255.255.255:2010"
 
-def launch_manche():
+def launch_manche(ivy_bus=default_ivy_bus):
+    """
+    Default bus is 127.255.255.255:2010\n
+    Enter the bus as a string "adrress"
+    """
+    print(f"Ivy started on bus {ivy_bus}\n")
     ivy.IvyInit( app_name , "[%s ready ]" % app_name , 0, on_cx_proc ,on_die_proc ) 
     ivy.IvyStart ( ivy_bus )
     time.sleep(1.0)
     ivy.IvyBindMsg(from_stick,"^Time t=(\S+)")
-    ivy.IvyBindMsg(on_AP_pushed,"^FCUAP1 on")   
+    ivy.IvyBindMsg(on_AP_pushed,"^FCUAP1 on")
+    print("Ready")
 
 if __name__ == "__main__":
     launch_manche()

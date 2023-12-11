@@ -16,11 +16,9 @@ def on_time(agent, *larg):
     else: 
         nx, nz= 1,1
     
-    IvySendMsg(f"Nxcste nx={nx} Nzcste nz={nz}")
+    IvySendMsg(f"APLongNxControl nx={1}")
+    IvySendMsg(f"APLongNzControl nz={1}")
 
-def on_message(agent, *larg):
-    IvySendMsg ("APNxControl nx=1")
-    IvySendMsg ("APNzControl nz=1")
 
    
 
@@ -32,8 +30,7 @@ IvyInit ( app_name , # application name for Ivy
 on_cx_proc , # called on cx/ disconnect
 on_die_proc ) # called when the agent dies
 IvyStart ( ivy_bus )
-IvyBindMsg(on_time, '^Time t=(.*)')
-IvyBindMsg(on_message, "^StateVector x=(\S+) y=(\S+) z=(\S+) Vp=(\S+) fpa=(\S+) psi=(\S+) phi=(\S+)")
+IvyBindMsg(on_time, '^Time t=(\S+)')
 
 
 

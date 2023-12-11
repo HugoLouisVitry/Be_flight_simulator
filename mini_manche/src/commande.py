@@ -57,9 +57,9 @@ def on_RollLimits(agent,*larg):
     p_limite_FGS = math.radians(larg[1])
 
 def on_StateVector(agent,*larg): # Stocke la valeur de phi
-    global phi
+    global phi  
     phi = float(larg[6])
-
+    
 def on_APLongNxControl(agent, *larg): # Transmet directement la commande nx au modèle avion
     nx = float(larg[0])
     ivy.IvySendMsg(f"APNxControl nx={nx}")
@@ -91,9 +91,11 @@ def on_APLatpControl(agent,*larg):
 
 #TODO Ajouter la limitation de roulis (avec retour à +/- 33°) 
 
-
-
-if __name__ == "__main__":
+def commande(ivy_bus=Ivy_bus):
+    """
+    Default bus is 127.255.255.255:2010\n
+    Enter the bus as a string : commande("adrress")
+    """
     ivy.IvyInit(AppName, f"[{AppName} ready]", 0, on_cx_proc, on_die_proc)
     ivy.IvyStart(Ivy_bus)
     time.sleep(1)
@@ -116,7 +118,10 @@ if __name__ == "__main__":
     # APLateral
     ivy.IvyBindMsg(on_APLatpControl,"^APLatpControl p=(\S+)")
     
+    ivy.IvyBindMsg(on_StateVector,"^StateVector x=(\S+) y=(\S+) z=(\S+) Vp=(\S+) fpa=(\S+) psi=(\S+) phi=(\S+)")
+    
 
-
+if __name__ == "__main__":
+    commande()
 
 
