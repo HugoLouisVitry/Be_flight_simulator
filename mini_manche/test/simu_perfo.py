@@ -1,4 +1,3 @@
-import ivy.std_api as ivy
 import time
 from ivy.std_api import *
 
@@ -24,6 +23,9 @@ def on_time(agent, *larg):
         nz_pos=1
         
     IvySendMsg (f"nx_neg={nx_neg} nz_neg={nz_neg} nx_pos={nx_pos} nz_pos={nz_pos}")
+def on_message(agent, *larg):
+    IvySendMsg ("APNxControl nx=1")
+    IvySendMsg ("APNzControl nz=1")
 
 ### Ivy Bus
 app_name = "Minimancheperfo "
@@ -35,15 +37,9 @@ on_cx_proc , # called on cx/ disconnect
 on_die_proc ) # called when the agent dies
 IvyStart ( ivy_bus )
 IvyBindMsg(on_time, '^Time t=(.*)')
+IvyBindMsg(on_message, "^StateVector x=(\S+) y=(\S+) z=(\S+) Vp=(\S+) fpa=(\S+) psi=(\S+) phi=(\S+)")
 
 
-### Envoie message Ivy
-
-def null_cb (*a):
-    pass
 
 # attente pour qu ’ivy s’ initialise correctement
 time . sleep (1.0)
-IvySendMsg ("^LimitsN nx_neg=1 nx_pos=1 nz_neg=1 nz_pos=1 ")
-IvyMainLoop()
-IvyStop ()
