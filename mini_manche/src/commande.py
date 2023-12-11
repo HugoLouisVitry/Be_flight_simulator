@@ -77,10 +77,12 @@ def on_APLatpControl(agent,*larg):
     if autoPiloteStatus == "on":
         p = p_AP
     else: # Commande manuel
+        # Calcul de la limitation de p manuel avec limitation en phi
         p_limit_neg = max(-p_limite_FGS, (-phi_limite_FGS - phi)/Dt)
         p_limit_pos = min(p_limite_FGS, (phi_limite_FGS - phi)/Dt)
         p = max(p_limit_neg,min(p_limit_pos,p_manche))
 
+        # Retour à phi_limite si dépassement
         if phi < -phi_limite_FGS:
             p = - phi_limite_FGS - phi
         elif phi > phi_limite_FGS:
