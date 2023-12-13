@@ -38,3 +38,8 @@ Venant du PA-Long :
 
 Venant du PA-Lat:
 + `APLatpControl p=(\S+)`
+
+# Messages interne :
++ `MancheCmdAxe nz=(\S+) p=(\S+)`
++ `MancheAP push`
++ `MancheCmdAxe dnx=(\S+)`
