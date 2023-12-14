@@ -30,6 +30,7 @@ change_dnx=False
 DNX=0.1# on envoie un delta nx
 
 #Flaps
+flap = 0
 
 #Landing Gear
 LDG_IN = 1
@@ -126,14 +127,19 @@ def update_stick():
 def mode_control(mode,minus,add):
     global change_dnx
     global dnx
-    
+    global flap
+
     if mode == FLAP :
         print("FLAP mode")
         if minus == PUSHED and not add:
-            print("\t less flap")
+            if flap > 0 :
+                flap = flap - 1
+            print(f"flap = {flap}\n") 
         if not minus and add == PUSHED:
-            print("\t more flap")
-    
+            if flap<2:
+                flap = flap + 1
+            print(f"flap = {flap}\n")
+               
     elif mode == LDG :
         print("LDG mode")
         if minus == PUSHED and not add:

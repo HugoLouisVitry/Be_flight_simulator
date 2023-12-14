@@ -24,8 +24,8 @@ A destination du FCU:
 A destination du FGS : 
 + `MancheFlap f=(\S+)`
 + `MancheLdg ldg=(\S+)` 
-
-Pour les landings gears : 0 rentré , 1 déployé 
+Flaps : 0,1 ou 2
+Landings gears : 0 rentré , 1 déployé 
 
 # Reception :
 
