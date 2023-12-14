@@ -22,6 +22,7 @@ def on_time(agent, *larg):
         nx_pos=1
         nz_pos=1
     IvySendMsg (f"nx_neg={nx_neg} nz_neg={nz_neg} nx_pos={nx_pos} nz_pos={nz_pos}")
+    
 def on_message(agent, *larg):
     IvySendMsg ("APNxControl nx=1")
     IvySendMsg ("APNzControl nz=1")
