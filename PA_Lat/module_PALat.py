@@ -6,7 +6,7 @@ deg2rad = np.pi/180
 
 state_vector = None 
 wind_vector = [50,0]
-magnetic_Declinaison_vector = [0*13.69]
+magnetic_Declinaison_vector = [13.69]
 limit_factor_vector = None
 roll_limits_AP_vector = [30*deg2rad,10000]
 axis_vector = [0,0,90]
