@@ -134,10 +134,13 @@ def mode_control(mode,minus,add):
         if minus == PUSHED and not add:
             if flap > 0 :
                 flap = flap - 1
-            print(f"flap = {flap}\n") 
+                ivy.IvySendMsg(f"MancheFlap f={flap}")
+            print(f"flap = {flap}\n")
+
         if not minus and add == PUSHED:
             if flap<2:
                 flap = flap + 1
+                ivy.IvySendMsg(f"MancheFlap f={flap}")
             print(f"flap = {flap}\n")
                
     elif mode == LDG :
