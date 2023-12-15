@@ -21,15 +21,14 @@ marge_angle = math.radians(5)
 tau_back = 1 # Tau pour le retour à 33° de roulis en manuel
 
 # Variable globale reçue
+nx = 0. # Dernier nx envoyée
+nx_manche = 0.
 nz_manche = 1. # Commande brute
 p_manche = 0. # Commande brute
-<<<<<<< HEAD
-nz_max = 1.5 # Limite brute
-nz_min = 0.5 # Limite brute
-=======
 nz_max = 2. # Limite brute
 nz_min = 0. # Limite brute
->>>>>>> ebf4af3b27c96abfc168dfa1f2c0d45962a48ea2
+nx_min = -0.5 # Limite brute
+nx_max = 1. # Limite brute
 phi_limite_FGS = math.pi/4 # en radians
 p_limite_FGS = math.pi/16 # en radians/s
 phi = 0. # en radians
@@ -57,10 +56,17 @@ def on_MancheCmdAxes(agent, *larg): # [nz,p] Update la commande brute du manche
     nz_manche = float(larg[0])
     p_manche = float(larg[1])
 
+def on_MancheCmdPoussee(agent, *larg):
+    global nx_manche
+    dnx = float(larg[0])
+    nx_manche = nx + dnx
+
 def on_LimitsN(agent,*larg): # Ignore la limitation en nx car non commandé par le manche
-    global nz_min, nz_max
-    nz_max = float(larg[2])
-    nz_min = float(larg[3])
+    global nx_max, nx_min, nz_min, nz_max
+    nx_min = float(larg[0])
+    nx_max = float(larg[1])
+    nz_min = float(larg[2])
+    nz_max = float(larg[3])
 
 def on_RollLimits(agent,*larg):
     global phi_limite_FGS, p_limite_FGS
@@ -72,7 +78,12 @@ def on_StateVector(agent,*larg): # Stocke la valeur de phi
     phi = float(larg[6])
     
 def on_APLongNxControl(agent, *larg): # Transmet directement la commande nx au modèle avion
-    nx = float(larg[0])
+    global nx
+    nx_AP = float(larg[0])
+    if autoPiloteStatus == "on":
+        nx = nx_AP
+    else:
+        nx = max(nx_min,min(nx_max,nx_manche))
     ivy.IvySendMsg(f"APNxControl nx={nx}")
 
 def on_APLongNzControl(agent, *larg):
@@ -131,6 +142,7 @@ def commande(ivy_bus=Ivy_bus):
 
     # Gestion des données du manche
     ivy.IvyBindMsg(on_MancheCmdAxes,"^MancheCmdAxes nz=(\S+) p=(\S+)")
+    ivy.IvyBindMsg(on_MancheCmdPoussee,"^MancheCmdPoussee dnx=(\S+)")
 
     # Gestion des limites brute FGS
     ivy.IvyBindMsg(on_LimitsN,"^LimitsN nx_neg=(\S+) nx_pos=(\S+) nz_neg=(\S+) nz_pos=(\S+)")

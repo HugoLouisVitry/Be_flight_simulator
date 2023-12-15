@@ -186,7 +186,7 @@ def ivy_share(agent, *larg):
     if Manual :
         ivy.IvySendMsg(f"MancheCmdAxes nz={nz+1} p={p}")
         if change_dnx :
-            ivy.IvySendMsg(f"MancheCmdAxe dnx={dnx}")
+            ivy.IvySendMsg(f"MancheCmdPoussee dnx={dnx}")
             print(f"dnx {change_dnx}")
             change_dnx = False
 

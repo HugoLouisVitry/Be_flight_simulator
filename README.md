@@ -42,4 +42,4 @@ Venant du PA-Lat:
 # Messages interne :
 + `MancheCmdAxe nz=(\S+) p=(\S+)`
 + `MancheAP push`
-+ `MancheCmdAxe dnx=(\S+)`
++ `MancheCmdPoussee dnx=(\S+)`
