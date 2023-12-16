@@ -20,6 +20,7 @@ A destination du modèle avion :
 A destination du FCU:
 - `^FCUAP1 push`
 - `^FCUAP1 off`
+- `^FCUAP1 on`
 
 A destination du FGS : 
 + `MancheFlap f=(\S+)`
@@ -39,7 +40,18 @@ Venant du PA-Long :
 Venant du PA-Lat:
 + `APLatpControl p=(\S+)`
 
+Venant du FCU:
+- `^FCUAP1 push`
+- `^FCUAP1 off`
+- `^FCUAP1 on`
+
 # Messages interne :
 + `MancheCmdAxe nz=(\S+) p=(\S+)`
 + `MancheAP push`
 + `MancheCmdPoussee dnx=(\S+)`
+
+
+# Utilisation 
+Pour utiliser le module du mini manche, lancer les deux fichiers contenu dans le dossier src. L'un gère le joystick, l'autre la commande. La commande fonctionne sans le joystick mais le joystick n'influence pas le modèle avion sans la commande.
+La commande n'envoie de consignes longitudinales qu'a récéption d'un message du paLong et de même pour le paLat. Donc il faudra utiliser les modules de test ou les originaux pour tester.
+La gestion des flaps et du train se fait depuis le joystick indépendament de l'état de l'auto pilote.
