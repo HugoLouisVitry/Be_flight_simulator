@@ -53,8 +53,8 @@ def fcu_lat(agent, *larg) :
     global fcu_lat_vector
     fcu_lat_vector = larg
     
-IvyInit("IvyGetMsgApp", "Ready", 0, null_cb, null_cb)
-IvyStart("127.255.255:2010")
+IvyInit("PALat", "[PALat Ready]", 0, null_cb, null_cb)
+IvyStart("127.255.255.255:2010")
 
 ## Commande pour récuperer les données 
 #State Vector
@@ -150,7 +150,7 @@ def derive():
 ## fonction e qui permet à l'avion de capturer l'axe en distance
 def ey_fct():
     ey = -np.sin(axis_vector[2]*deg2rad)*(state_vector[0]-axis_vector[0]) + np.cos(axis_vector[2]*deg2rad)*(state_vector[1] - axis_vector[1])
-    print('ey = ' + str(ey))
+    #print('ey = ' + str(ey))
     return ey
 
 ## fonction qui permet à l'avion de capturer l'axe en cap
@@ -163,7 +163,7 @@ def Xcapture_fct():
         sinX = -1
     X = np.arcsin(sinX)
     Xcapture = X + axis_vector[2]*deg2rad
-    print('Xcapture = ' + str(Xcapture/deg2rad))
+    #print('Xcapture = ' + str(Xcapture/deg2rad))
     return Xcapture
 
 IvyMainLoop()

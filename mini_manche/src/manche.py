@@ -130,7 +130,7 @@ def mode_control(mode,minus,add):
     global flap
 
     if mode == FLAP :
-        print("FLAP mode")
+        #print("FLAP mode")
         if minus == PUSHED and not add:
             if flap > 0 :
                 flap = flap - 1
@@ -144,7 +144,7 @@ def mode_control(mode,minus,add):
             print(f"flap = {flap}\n")
                
     elif mode == LDG :
-        print("LDG mode")
+        #print("LDG mode")
         if minus == PUSHED and not add:
             ivy.IvySendMsg(f"MancheLdg ldg={LDG_IN}")
             print("\t ldg_in")
@@ -153,7 +153,7 @@ def mode_control(mode,minus,add):
             print("\t ldg_out")
 
     elif mode == NX :
-        print("NX mode")
+        #print("NX mode")
         if minus == PUSHED and not add:
             dnx = -DNX
             change_dnx = True
@@ -162,9 +162,9 @@ def mode_control(mode,minus,add):
             change_dnx = True
             
     else : #IDLE
-        print("IDLE mode")
+        #print("IDLE mode")
         pass
-    print(mode)
+    #print(mode)
     
 
 def ivy_share(agent, *larg):

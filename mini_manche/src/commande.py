@@ -2,11 +2,10 @@ import ivy.std_api as ivy
 import time
 import math
 
-# InitStateVector x=0 y=0 z=2000 Vp=180 fpa=0 psi=0 phi=0
 
 # Configuration Ivy
 AppName = "Commande"
-Ivy_bus = "127.255.255.255:2010" #TODO à changer pour travailler entre plusieurs ordinateurs
+Ivy_bus = "127.255.255.255:2010"
 
 def on_cx_proc(agent, connected):
     pass
@@ -87,6 +86,7 @@ def on_APLongNxControl(agent, *larg): # Transmet directement la commande nx au m
     ivy.IvySendMsg(f"APNxControl nx={nx}")
 
 def on_APLongNzControl(agent, *larg):
+    print("##########################################################")
     nz_AP = float(larg[0])
     if autoPiloteStatus == "on":
         nz = nz_AP
@@ -156,6 +156,7 @@ def commande(ivy_bus=Ivy_bus):
     ivy.IvyBindMsg(on_APLatpControl,"^APLatpControl p=(\S+)")
     
     ivy.IvyBindMsg(on_StateVector,"^StateVector x=(\S+) y=(\S+) z=(\S+) Vp=(\S+) fpa=(\S+) psi=(\S+) phi=(\S+)")
+    ivy.IvyMainLoop()
     
 
 if __name__ == "__main__":
