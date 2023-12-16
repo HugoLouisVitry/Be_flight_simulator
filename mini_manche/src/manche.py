@@ -27,14 +27,15 @@ p=0
 nz=1
 dnx=0
 change_dnx=False
-DNX=0.1# on envoie un delta nx
+DNX=0.05# on envoie un delta nx
 
 #Flaps
 flap = 0
+change_flap=False
 
 #Landing Gear
-LDG_IN = 1
-LDG_OUT = 2
+LDG_IN = 0
+LDG_OUT = 1
 
 #Mode pour les boutons 
 IDLE = 0
@@ -119,8 +120,8 @@ def update_stick():
                 case _:
                     Button_Mode = IDLE
 
-            if Manual:
-                mode_control(Button_Mode,bouton_gauche,bouton_droit)
+            
+            mode_control(Button_Mode,bouton_gauche,bouton_droit)
                     
             
                 
@@ -128,20 +129,21 @@ def mode_control(mode,minus,add):
     global change_dnx
     global dnx
     global flap
+    global change_flap
 
     if mode == FLAP :
         #print("FLAP mode")
         if minus == PUSHED and not add:
             if flap > 0 :
                 flap = flap - 1
-                ivy.IvySendMsg(f"MancheFlap f={flap}")
-            print(f"flap = {flap}\n")
+                change_flap = True
+            #print(f"flap = {flap}\n")
 
         if not minus and add == PUSHED:
             if flap<2:
                 flap = flap + 1
-                ivy.IvySendMsg(f"MancheFlap f={flap}")
-            print(f"flap = {flap}\n")
+                change_flap = True
+            #print(f"flap = {flap}\n")
                
     elif mode == LDG :
         #print("LDG mode")
@@ -175,28 +177,40 @@ def ivy_share(agent, *larg):
     global gachette
     global change_dnx
     global dnx
+    global flap
+    global change_flap
     
     #Désactivation autopilote
     if  not Manual and gachette==1:
         Manual = True
-        print(f"Manual : {Manual}")
+        #print(f"Manual : {Manual}")
         ivy.IvySendMsg("MancheAP push")
 
     #Envoi des commandes manuelles
     if Manual :
         ivy.IvySendMsg(f"MancheCmdAxes nz={nz+1} p={p}")
-        if change_dnx :
-            ivy.IvySendMsg(f"MancheCmdPoussee dnx={dnx}")
-            print(f"dnx {change_dnx}")
-            change_dnx = False
+        
+    #Commande pour le fgs
+    if change_dnx :
+        ivy.IvySendMsg(f"MancheCmdPoussee dnx={dnx}")
+        #print(f"dnx {change_dnx}")
+        change_dnx = False
+    if change_flap :
+        ivy.IvySendMsg(f"MancheFlap f={flap}")
+        change_flap = False
 
-
-def on_AP_pushed(agent, *larg):
+#Gestion etat AP
+def on_AP_on(agent, *larg):
     global Manual
     Manual = False
-    print(f"Manual : {Manual}")
+    #print(f"Manual : {Manual}")
+    
+def on_AP_off(agent, *larg):
+    global Manual
+    Manual = True
+#    print(f"Manual : {Manual}")
 
-#
+#Ivy
 def on_cx_proc(agent, connected):
     pass
 
@@ -206,13 +220,13 @@ def on_die_proc(agent,_id):
 app_name = "Manche"
 ivy_bus = "127.255.255.255:2010"
 
-if len(sys.argv)==2:
+if len(sys.argv)==2: # bus com en parrametre
     ivy_bus = sys.argv[1]
 
 def launch_manche():
     """
     Default bus is 127.255.255.255:2010\n
-    Enter the bus as a string "adrress"
+    Enter the bus as a string "adrress" as a python parrameter
     """
     print(f"Ivy started on bus {ivy_bus}\n")
     ivy.IvyInit( app_name , "[%s ready ]" % app_name , 0, on_cx_proc ,on_die_proc ) 
@@ -220,7 +234,8 @@ def launch_manche():
     time.sleep(1.0)
     stick=tr.Thread(target=update_stick)
     stick.start()
-    ivy.IvyBindMsg(on_AP_pushed,"^FCUAP1 on")
+    ivy.IvyBindMsg(on_AP_on,"^FCUAP1 on")
+    ivy.IvyBindMsg(on_AP_off,"^FCUAP1 off")
     ivy.IvyBindMsg(ivy_share,"^Time t=(\S+)")
     print("Ready")
 
