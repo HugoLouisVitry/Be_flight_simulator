@@ -186,7 +186,7 @@ def mode_control(mode,minus,add):
                 change_nx_mode = True       
 
     elif mode == NX :
-        if not auto_nx : 
+        if auto_nx == "False" : 
             #print("NX mode")
             if minus == PUSHED and not add:
                 dnx = -DNX
