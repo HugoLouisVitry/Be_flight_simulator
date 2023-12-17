@@ -8,7 +8,7 @@ import sys
 clock_interval = 30
 
 
-#==========MANCHE=========================#
+#==========MANCHE=============#
 Pmax= radians(5) # 5 degrés/sec
 nzmax=1
 
@@ -27,25 +27,37 @@ p=0
 nz=1
 dnx=0
 change_dnx=False
-DNX=0.1# on envoie un delta nx
-
+DNX=0.05# on envoie un delta nx
+auto_nx = "False"
+change_nx_mode = False
 #Flaps
+flap = 0
+change_flap=False
 
 #Landing Gear
-LDG_IN = 1
-LDG_OUT = 2
+LDG_IN = 0
+LDG_OUT = 1
+ldg = LDG_IN
+change_ldg = False
 
 #Mode pour les boutons 
-IDLE = 0
-NX = 1
-FLAP = 2
-LDG = 3
+IDLE = "IDLE"
+NX = "NX"
+FLAP = "FLAP"
+LDG = "LDG"
+AUTO_NX = "AUTO_NX"
 Button_Mode = IDLE
 
 pygame.init()
 
 def update_stick():
-    """Récupération des données brutes du joystick \n Modifie nz,p AP off
+    """
+    Joystick handling and interpretation for command entries\n
+    Hotplug is handled so you can unplug and plug again the joystick and it will work\n
+
+    You can plug any joystick but it isn't guaranteed to work\n
+    Only the ST90 will exactly do what's expected to
+    
     """
     
     joysticks = {}
@@ -84,7 +96,7 @@ def update_stick():
         
         for joystick in joysticks.values():
 
-            # Positions angulaires
+            # Positions angulaires et voyants
             brut_p = joystick.get_axis(axe_p)
             brut_nz = joystick.get_axis(axe_nz)
             mode_axe = joystick.get_axis(axe_mode)
@@ -115,50 +127,83 @@ def update_stick():
                     Button_Mode = LDG
                 case 0.5:
                     Button_Mode = NX
+                case -1:
+                    Button_Mode = AUTO_NX
                 case _:
                     Button_Mode = IDLE
 
-            if Manual:
-                mode_control(Button_Mode,bouton_gauche,bouton_droit)
+            #Controle flaps, ldg et nx
+            mode_control(Button_Mode,bouton_gauche,bouton_droit)
                     
             
                 
 def mode_control(mode,minus,add):
+    """
+    Joystick button configuration handling\n
+    Modes are flaps, landing gears and nx.
+    """
     global change_dnx
     global dnx
-    
+    global flap
+    global change_flap
+    global ldg
+    global change_ldg
+    global auto_nx
+    global change_nx_mode
+
     if mode == FLAP :
-        print("FLAP mode")
-        if minus == PUSHED and not add:
-            print("\t less flap")
-        if not minus and add == PUSHED:
-            print("\t more flap")
+        #print("FLAP mode")
+        if not change_flap:
+            if minus == PUSHED and not add:
+                if flap > 0 :
+                    flap = flap - 1
+                    change_flap = True
+                #print(f"flap = {flap}\n")
     
+            if not minus and add == PUSHED:
+                if flap<2:
+                    flap = flap + 1
+                    change_flap = True
+                #print(f"flap = {flap}\n")
+               
     elif mode == LDG :
-        print("LDG mode")
+        #print("LDG mode")
         if minus == PUSHED and not add:
-            ivy.IvySendMsg(f"MancheLdg ldg={LDG_IN}")
-            print("\t ldg_in")
+            ldg = LDG_IN
+            change_ldg=True
+            #print("\t ldg_in")
         if not minus and add == PUSHED:
-            ivy.IvySendMsg(f"MancheLdg ldg={LDG_OUT}")
-            print("\t ldg_out")
+            ldg = LDG_OUT
+            change_ldg=True
+            #print("\t ldg_out")
+
+    elif mode == AUTO_NX : 
+            if minus == PUSHED and not add:
+                auto_nx = "False"
+                change_nx_mode = True
+            if not minus and add == PUSHED:
+                auto_nx = "True" 
+                change_nx_mode = True       
 
     elif mode == NX :
-        print("NX mode")
-        if minus == PUSHED and not add:
-            dnx = -DNX
-            change_dnx = True
-        if not minus and add == PUSHED:
-            dnx = DNX
-            change_dnx = True
+            #print("NX mode")
+            if minus == PUSHED and not add:
+                dnx = -DNX
+                change_dnx = True
+            if not minus and add == PUSHED:
+                dnx = DNX
+                change_dnx = True
             
     else : #IDLE
-        print("IDLE mode")
+        #print("IDLE mode")
         pass
-    print(mode)
     
 
 def ivy_share(agent, *larg):
+    """
+    Send messages on ivy bus in sync with the clock
+    
+    """
     
     global nz
     global p    
@@ -166,29 +211,64 @@ def ivy_share(agent, *larg):
     global gachette
     global change_dnx
     global dnx
+    global flap
+    global change_flap
+    global ldg
+    global change_ldg
+    global auto_nx
+    global change_nx_mode
     
     #Désactivation autopilote
     if  not Manual and gachette==1:
         Manual = True
-        print(f"Manual : {Manual}")
+        #print(f"Manual : {Manual}")
         ivy.IvySendMsg("MancheAP push")
 
-    #Envoi des commandes manuelles
+    #Commandes manuelles ed nz et p
     if Manual :
         ivy.IvySendMsg(f"MancheCmdAxes nz={nz+1} p={p}")
-        if change_dnx :
-            ivy.IvySendMsg(f"MancheCmdAxe dnx={dnx}")
-            print(f"dnx {change_dnx}")
-            change_dnx = False
+        
+    #Commande pour le fgs
+    if change_dnx :
+        ivy.IvySendMsg(f"MancheCmdPoussee dnx={dnx}")
+        change_dnx = False
+    if change_flap :
+        ivy.IvySendMsg(f"MancheFlap f={flap}")
+        change_flap = False
+    if change_ldg :
+        ivy.IvySendMsg(f"MancheLdg ldg={ldg}")
+        change_ldg = False
+    if change_nx_mode:
+        ivy.IvySendMsg(f"MancheThr auto_thr={auto_nx}")
+        change_nx_mode = False
+        
 
-
-def on_AP_pushed(agent, *larg):
+#Gestion etat AP
+def on_AP_on(agent, *larg):
+    """
+    Handle AP enabling status 
+    """
     global Manual
     Manual = False
-    print(f"Manual : {Manual}")
+    #print(f"Manual : {Manual}")
+    
+def on_AP_off(agent, *larg):
+    """
+    Handle AP disabling status 
+    """
+    global Manual
+    Manual = True
+#    print(f"Manual : {Manual}")
 
-#
+#Ivy
 def on_cx_proc(agent, connected):
+    print(
+        f"Mode explanation\n"
+        +f"\tIDLE : do nothing\n"
+        +f"\tNX : decrease/increase nx value \n"
+        +f"\tFLAP : decrease/increase flap config\n"
+        +f"\tLDG : put in/out the ldgs\n"
+        +f"\tAUTO_NX : disable/enable auto thrust\n")
     pass
 
 def on_die_proc(agent,_id):
@@ -197,13 +277,14 @@ def on_die_proc(agent,_id):
 app_name = "Manche"
 ivy_bus = "127.255.255.255:2010"
 
-if len(sys.argv)==2:
+if len(sys.argv)==2: # bus de com en paramètres
     ivy_bus = sys.argv[1]
 
 def launch_manche():
     """
+    Use this function to start joystick handling\n
     Default bus is 127.255.255.255:2010\n
-    Enter the bus as a string "adrress"
+    Enter the bus as a string "x.x.x.x:x" as a python parrameter
     """
     print(f"Ivy started on bus {ivy_bus}\n")
     ivy.IvyInit( app_name , "[%s ready ]" % app_name , 0, on_cx_proc ,on_die_proc ) 
@@ -211,12 +292,11 @@ def launch_manche():
     time.sleep(1.0)
     stick=tr.Thread(target=update_stick)
     stick.start()
-    ivy.IvyBindMsg(on_AP_pushed,"^FCUAP1 on")
+    ivy.IvyBindMsg(on_AP_on,"^FCUAP1 on")
+    ivy.IvyBindMsg(on_AP_off,"^FCUAP1 off")
     ivy.IvyBindMsg(ivy_share,"^Time t=(\S+)")
     print("Ready")
 
 if __name__ == "__main__":
     launch_manche()
 
-    # If you forget this line, the program will 'hang'
-    # on exit if running from IDLE.    
