@@ -197,14 +197,7 @@ def mode_control(mode,minus,add):
     else : #IDLE
         #print("IDLE mode")
         pass
-    print(
-        f"Mode explanation\n"
-        +f"\tIDLE : do nothing\n"
-        +f"\tNX : decrease/increase nx value \n"
-        +f"\tFLAP : decrease/increase flap config\n"
-        +f"\tLDG : put in/out the ldgs\n"
-        +f"\tAUTO_NX : disable/enable auto thrust\n\n"
-        +f"Actual mode : {mode} \n")
+    
 
 def ivy_share(agent, *larg):
     """
@@ -269,6 +262,13 @@ def on_AP_off(agent, *larg):
 
 #Ivy
 def on_cx_proc(agent, connected):
+    print(
+        f"Mode explanation\n"
+        +f"\tIDLE : do nothing\n"
+        +f"\tNX : decrease/increase nx value \n"
+        +f"\tFLAP : decrease/increase flap config\n"
+        +f"\tLDG : put in/out the ldgs\n"
+        +f"\tAUTO_NX : disable/enable auto thrust\n")
     pass
 
 def on_die_proc(agent,_id):
