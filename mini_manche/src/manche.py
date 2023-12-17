@@ -147,17 +147,18 @@ def mode_control(mode,minus,add):
 
     if mode == FLAP :
         #print("FLAP mode")
-        if minus == PUSHED and not add:
-            if flap > 0 :
-                flap = flap - 1
-                change_flap = True
-            #print(f"flap = {flap}\n")
-
-        if not minus and add == PUSHED:
-            if flap<2:
-                flap = flap + 1
-                change_flap = True
-            #print(f"flap = {flap}\n")
+        if not change_flap:
+            if minus == PUSHED and not add:
+                if flap > 0 :
+                    flap = flap - 1
+                    change_flap = True
+                #print(f"flap = {flap}\n")
+    
+            if not minus and add == PUSHED:
+                if flap<2:
+                    flap = flap + 1
+                    change_flap = True
+                #print(f"flap = {flap}\n")
                
     elif mode == LDG :
         #print("LDG mode")
