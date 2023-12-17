@@ -50,9 +50,9 @@ def axis(agent, *larg):
     axis_vector = np.float_(larg)
     print(magnetic_Declinaison_vector[0])
     if fcu_lat_vector[0] == 'SelectedHeading':
-        capture_cap((float(fcu_lat_vector[1]) ) * deg2rad+ magnetic_Declinaison_vector[0])
+        capture_cap((float(fcu_lat_vector[1]) ) * deg2rad)
     elif fcu_lat_vector[0] == 'SelectedTrack':
-        capture_route((float(fcu_lat_vector[1])) * deg2rad + magnetic_Declinaison_vector[0])
+        capture_route((float(fcu_lat_vector[1])) * deg2rad)
     elif fcu_lat_vector[0] == 'Managed':
         capture_axe()
 
@@ -155,7 +155,6 @@ def derive():
         sind = 1
     elif sind < -1:
         sind = -1
-    print(np.arcsin(sind))
     return np.arcsin(sind)
 
 

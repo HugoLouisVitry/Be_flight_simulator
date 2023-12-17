@@ -186,13 +186,13 @@ def mode_control(mode,minus,add):
                 change_nx_mode = True       
 
     elif mode == NX :
-            #print("NX mode")
-            if minus == PUSHED and not add:
-                dnx = -DNX
-                change_dnx = True
-            if not minus and add == PUSHED:
-                dnx = DNX
-                change_dnx = True
+        #print("NX mode")
+        if minus == PUSHED and not add:
+            dnx = -DNX
+            change_dnx = True
+        if not minus and add == PUSHED:
+            dnx = DNX
+            change_dnx = True
             
     else : #IDLE
         #print("IDLE mode")
@@ -262,13 +262,6 @@ def on_AP_off(agent, *larg):
 
 #Ivy
 def on_cx_proc(agent, connected):
-    print(
-        f"Mode explanation\n"
-        +f"\tIDLE : do nothing\n"
-        +f"\tNX : decrease/increase nx value \n"
-        +f"\tFLAP : decrease/increase flap config\n"
-        +f"\tLDG : put in/out the ldgs\n"
-        +f"\tAUTO_NX : disable/enable auto thrust\n")
     pass
 
 def on_die_proc(agent,_id):
@@ -290,6 +283,13 @@ def launch_manche():
     ivy.IvyInit( app_name , "[%s ready ]" % app_name , 0, on_cx_proc ,on_die_proc ) 
     ivy.IvyStart ( ivy_bus )
     time.sleep(1.0)
+    print(
+        f"Mode explanation\n"
+        +f"\tIDLE : do nothing\n"
+        +f"\tNX : decrease/increase nx value \n"
+        +f"\tFLAP : decrease/increase flap config\n"
+        +f"\tLDG : put in/out the ldgs\n"
+        +f"\tAUTO_NX : disable/enable auto thrust\n")
     stick=tr.Thread(target=update_stick)
     stick.start()
     ivy.IvyBindMsg(on_AP_on,"^FCUAP1 on")

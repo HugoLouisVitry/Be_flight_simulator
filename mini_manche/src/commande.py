@@ -34,6 +34,7 @@ phi = 0. # en radians
 
 # Variable globale interne
 autoPiloteStatus = "off"
+autothrottle = False # False -> gestion manuelle de nx , True -> utilise le nx de l'autopilote
 back_to_rest = False # Booléen pour le retour à +/- 33° de roulis au lâcher du mini manche
 
 # Fonction message
@@ -60,6 +61,14 @@ def on_MancheCmdPoussee(agent, *larg):
     dnx = float(larg[0])
     nx_manche = nx + dnx
 
+def on_MancheThr(agent, *larg):
+    global autothrottle
+    if larg[0] == "True":
+        autothrottle = True
+    else:
+        autothrottle = False
+        
+
 def on_LimitsN(agent,*larg): # Ignore la limitation en nx car non commandé par le manche
     global nx_max, nx_min, nz_min, nz_max
     nx_min = float(larg[0])
@@ -77,12 +86,13 @@ def on_StateVector(agent,*larg): # Stocke la valeur de phi
     phi = float(larg[6])
     
 def on_APLongNxControl(agent, *larg): # Transmet directement la commande nx au modèle avion
-    global nx
+    global nx, nx_manche
     nx_AP = float(larg[0])
-    if autoPiloteStatus == "on":
+    if autoPiloteStatus == "on" or autothrottle: # Autopilote actif ou Autothrottle actif
         nx = nx_AP
+        nx_manche = nx
     else:
-        nx = max(nx_min,min(nx_max,nx_manche))
+        nx = max(nx_min,min(nx_max,nx_manche)) # Limitation du nx manuel
     ivy.IvySendMsg(f"APNxControl nx={nx}")
 
 def on_APLongNzControl(agent, *larg):
@@ -142,6 +152,7 @@ def commande(ivy_bus=Ivy_bus):
     # Gestion des données du manche
     ivy.IvyBindMsg(on_MancheCmdAxes,"^MancheCmdAxes nz=(\S+) p=(\S+)")
     ivy.IvyBindMsg(on_MancheCmdPoussee,"^MancheCmdPoussee dnx=(\S+)")
+    ivy.IvyBindMsg(on_MancheThr,"^MancheThr auto_thr=(\S+)")
 
     # Gestion des limites brute FGS
     ivy.IvyBindMsg(on_LimitsN,"^LimitsN nx_neg=(\S+) nx_pos=(\S+) nz_neg=(\S+) nz_pos=(\S+)")
@@ -155,6 +166,7 @@ def commande(ivy_bus=Ivy_bus):
     ivy.IvyBindMsg(on_APLatpControl,"^APLatpControl p=(\S+)")
     
     ivy.IvyBindMsg(on_StateVector,"^StateVector x=(\S+) y=(\S+) z=(\S+) Vp=(\S+) fpa=(\S+) psi=(\S+) phi=(\S+)")
+    
     ivy.IvyMainLoop()
     
 

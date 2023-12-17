@@ -7,7 +7,7 @@ def on_cx_proc (agent , connected ) :
 def on_die_proc (agent , _id ):
     pass
 def on_time(agent, *larg):
-    nx, nz= 0.05,1.02 
+    nx, nz= 0,1 
     IvySendMsg(f"APLongNxControl nx={nx}")
     IvySendMsg(f"APLongNzControl nz={nz}")
 

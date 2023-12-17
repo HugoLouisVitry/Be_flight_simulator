@@ -12,7 +12,7 @@ v_lim_init = False
 cap_v= False
 cap_pente =False
 alt_mode = "Managed" #Selected ou FPA ou VS
-v_mode = "Managed" 
+v_mode = "Managed" #Selected ou Managed
 alt_c=0
 v_c_TAS=0
 fpa_vz_c=0
@@ -79,6 +79,7 @@ def maj_state_v(agent, *larg):
             capture_pente_managed()
     else:
         send() 
+    print(f"cap_v:{cap_v} v_mode:{v_mode} cap_pente:{cap_pente} alt_mode:{alt_mode}")
 
 
     
@@ -176,7 +177,7 @@ def capture_vitesse_managed(agent=0, *larg):
 
 def send():
     global nz,nx
-    print("nz={}".format(nz),"nx={}".format(nx))
+    #print("nz={}".format(nz),"nx={}".format(nx))
     time.sleep(1)
     IvySendMsg("APLongNzControl nz={}".format(nz))
     IvySendMsg("APLongNxControl nx={}".format(nx))
