@@ -37,7 +37,7 @@ def limit_factor(agent, *larg) :
 
 def roll_limits_AP(agent, *larg) :
     global roll_limits_AP_vector
-    roll_limits_AP_vector = np.float_(larg)
+    roll_limits_AP_vector = deg2rad * np.float_(larg)
 
 def axis(agent, *larg) :
     global axis_vector
