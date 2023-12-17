@@ -28,7 +28,8 @@ nz=1
 dnx=0
 change_dnx=False
 DNX=0.05# on envoie un delta nx
-
+auto_nx = "False"
+change_nx_mode = False
 #Flaps
 flap = 0
 change_flap=False
@@ -40,10 +41,11 @@ ldg = LDG_IN
 change_ldg = False
 
 #Mode pour les boutons 
-IDLE = 0
-NX = 1
-FLAP = 2
-LDG = 3
+IDLE = "IDLE"
+NX = "NX"
+FLAP = "FLAP"
+LDG = "LDG"
+AUTO_NX = "AUTO_NX"
 Button_Mode = IDLE
 
 pygame.init()
@@ -125,6 +127,8 @@ def update_stick():
                     Button_Mode = LDG
                 case 0.5:
                     Button_Mode = NX
+                case -1:
+                    Button_Mode = AUTO_NX
                 case _:
                     Button_Mode = IDLE
 
@@ -144,6 +148,8 @@ def mode_control(mode,minus,add):
     global change_flap
     global ldg
     global change_ldg
+    global auto_nx
+    global change_nx_mode
 
     if mode == FLAP :
         #print("FLAP mode")
@@ -171,20 +177,35 @@ def mode_control(mode,minus,add):
             change_ldg=True
             #print("\t ldg_out")
 
+    elif mode == AUTO_NX : 
+            if minus == PUSHED and not add:
+                auto_nx = "False"
+                change_nx_mode = True
+            if not minus and add == PUSHED:
+                auto_nx = "True" 
+                change_nx_mode = True       
+
     elif mode == NX :
-        #print("NX mode")
-        if minus == PUSHED and not add:
-            dnx = -DNX
-            change_dnx = True
-        if not minus and add == PUSHED:
-            dnx = DNX
-            change_dnx = True
+        if not auto_nx : 
+            #print("NX mode")
+            if minus == PUSHED and not add:
+                dnx = -DNX
+                change_dnx = True
+            if not minus and add == PUSHED:
+                dnx = DNX
+                change_dnx = True
             
     else : #IDLE
         #print("IDLE mode")
         pass
-    #print(mode)
-    
+    print(
+        f"Mode explanation\n"
+        +f"\tIDLE : do nothing\n"
+        +f"\tNX : decrease/increase nx value \n"
+        +f"\tFLAP : decrease/increase flap config\n"
+        +f"\tLDG : put in/out the ldgs\n"
+        +f"\tAUTO_NX : disable/enable auto thrust\n\n"
+        +f"Actual mode : {mode} \n")
 
 def ivy_share(agent, *larg):
     """
@@ -202,6 +223,8 @@ def ivy_share(agent, *larg):
     global change_flap
     global ldg
     global change_ldg
+    global auto_nx
+    global change_nx_mode
     
     #Désactivation autopilote
     if  not Manual and gachette==1:
@@ -223,6 +246,9 @@ def ivy_share(agent, *larg):
     if change_ldg :
         ivy.IvySendMsg(f"MancheLdg ldg={ldg}")
         change_ldg = False
+    if change_nx_mode:
+        ivy.IvySendMsg(f"MancheThr auto_thr={auto_nx}")
+        change_nx_mode = False
         
 
 #Gestion etat AP

@@ -49,6 +49,7 @@ Venant du FCU:
 + `MancheCmdAxe nz=(\S+) p=(\S+)`
 + `MancheAP push`
 + `MancheCmdPoussee dnx=(\S+)`
++ `MancheThr auto_thr=(\S+)`
 
 
 # Utilisation 
