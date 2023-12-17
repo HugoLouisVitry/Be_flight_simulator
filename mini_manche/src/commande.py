@@ -86,7 +86,6 @@ def on_APLongNxControl(agent, *larg): # Transmet directement la commande nx au m
     ivy.IvySendMsg(f"APNxControl nx={nx}")
 
 def on_APLongNzControl(agent, *larg):
-    print("##########################################################")
     nz_AP = float(larg[0])
     if autoPiloteStatus == "on":
         nz = nz_AP

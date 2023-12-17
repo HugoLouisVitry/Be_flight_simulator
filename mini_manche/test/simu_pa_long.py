@@ -7,17 +7,9 @@ def on_cx_proc (agent , connected ) :
 def on_die_proc (agent , _id ):
     pass
 def on_time(agent, *larg):
-    if float(larg[0]) < 10:
-        nx=3
-        nz=3
-    elif 20<float(larg[0])<30:
-        nx=0.001
-        nz=0.001
-    else: 
-        nx, nz= 1,1
-    
-    IvySendMsg(f"APLongNxControl nx={1}")
-    IvySendMsg(f"APLongNzControl nz={1}")
+    nx, nz= 0.05,1.02 
+    IvySendMsg(f"APLongNxControl nx={nx}")
+    IvySendMsg(f"APLongNzControl nz={nz}")
 
 
    

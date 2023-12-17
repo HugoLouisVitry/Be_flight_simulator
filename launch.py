@@ -2,9 +2,9 @@ import subprocess
 import time
 import os
 
-files_mini_manche = ['src/commande.py','src/manche.py'] #,'test/simu_pa_lat.py','test/simu_pa_long.py']
+files_mini_manche = ['src/commande.py','src/manche.py','test/simu_pa_long.py']
 files_FGS = ['main.py']
-files_APLong = ['PA_long.py']
+files_APLong = [] #['PA_long.py']
 files_APLat = ['module_PALat.py']
 procs = []
 
