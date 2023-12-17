@@ -23,13 +23,13 @@ tau_back = 1 # Tau pour le retour à 33° de roulis en manuel
 # Variable globale reçue
 nz_manche = 1. # Commande brute
 p_manche = 0. # Commande brute
-<<<<<<< HEAD
+#<<<<<<< HEAD
 nz_max = 1.5 # Limite brute
 nz_min = 0.5 # Limite brute
-=======
+#=======
 nz_max = 2. # Limite brute
 nz_min = 0. # Limite brute
->>>>>>> ebf4af3b27c96abfc168dfa1f2c0d45962a48ea2
+#>>>>>>> ebf4af3b27c96abfc168dfa1f2c0d45962a48ea2
 phi_limite_FGS = math.pi/4 # en radians
 p_limite_FGS = math.pi/16 # en radians/s
 phi = 0. # en radians
