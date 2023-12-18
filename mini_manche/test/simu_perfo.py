@@ -27,15 +27,14 @@ def on_message(agent, *larg):
     IvySendMsg ("APNxControl nx=1")
     IvySendMsg ("APNzControl nz=1")
     IvySendMsg("MagneticDeclination=(13,31)")
-    IvySendMsg("WindComponent VWind=(10) dirWind=(35)")
-    IvySendMsg("LimitsN nx_neg=(2) nx_pos=(2) nz_neg=(2) nz_pos=(2)")
-    IvySendMsg("LimitsNAP nx_neg_AP=(2) nx_pos_AP=(2) nz_neg_AP=(2) nz_pos_AP=(2)")
-    IvySendMsg("SpeedLimits vmin=() vmax=(\S+)")
-    IvySendMsg("ManagedSpeed vi=(130)")
-    IvySendMsg("RollLimits phimax=(45) pmax=(20)")
-    IvySendMsg("RollLimitsAP phimax_AP=(60) pmax_AP=(20)")
-    IvySendMsg("Axis x=(0) y=(0) chi=(13,31)")
-    IvySendMsg("ManagedAlt alt=(60000) Q=(1013)")
+    IvySendMsg("WindComponent VWind=10 dirWind=35")
+    IvySendMsg("LimitsN nx_neg=2 nx_pos=2 nz_neg=2 nz_pos=2")
+    IvySendMsg("LimitsNAP nx_neg_AP=2 nx_pos_AP=2 nz_neg_AP=2 nz_pos_AP=2")
+    IvySendMsg("SpeedLimits vmin=100 vmax=250")
+    IvySendMsg("ManagedSpeed vi=130")
+    IvySendMsg("RollLimits phimax=45 pmax=20")
+    IvySendMsg("RollLimitsAP phimax_AP=60 pmax_AP=20")
+    IvySendMsg("ManagedAlt alt=60000 Q=1013")
 
 ### Ivy Bus
 app_name = "Minimancheperfo "

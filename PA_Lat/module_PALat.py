@@ -49,9 +49,9 @@ def axis(agent, *larg):
     global axis_vector
     axis_vector = np.float_(larg)
     if fcu_lat_vector[0] == 'SelectedHeading':
-        capture_cap((float(fcu_lat_vector[1]) ) * deg2rad)
+        capture_cap((float(fcu_lat_vector[1]) ) * deg2rad + magnetic_Declinaison_vector[0])
     elif fcu_lat_vector[0] == 'SelectedTrack':
-        capture_route((float(fcu_lat_vector[1])) * deg2rad)
+        capture_route((float(fcu_lat_vector[1])) * deg2rad + magnetic_Declinaison_vector[0])
     elif fcu_lat_vector[0] == 'Managed':
         capture_axe()
 

@@ -182,7 +182,7 @@ def send():
     IvySendMsg("APLongNxControl nx={}".format(nx))
 
 app_n ="PAlong"
-ivy_bus ="127.255.255.255:8000"
+ivy_bus ="127.255.255.255:2010"
 IvyInit(app_n ,"Pa_long_ready" ,0 ,op ,cl )
 IvyStart(ivy_bus)
 time.sleep(1)

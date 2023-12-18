@@ -28,7 +28,7 @@ nz_max = 2. # Limite brute
 nz_min = 0. # Limite brute
 nx_min = -0.5 # Limite brute
 nx_max = 1. # Limite brute
-phi_limite_FGS = math.pi/4 # en radians
+phi_limite_FGS = math.pi/2 # en radians
 p_limite_FGS = math.pi/16 # en radians/s
 phi = 0. # en radians
 
