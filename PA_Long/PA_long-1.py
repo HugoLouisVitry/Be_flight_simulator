@@ -25,7 +25,7 @@ nz_max =0
 nz=1
 nx=0
 v_lim=[0,0]
-state_vector = {"x":0,"y":0,"z":0,"TAS":0,"fpa":0,"phi":0,"psi":0}
+state_vector = {"x":0,"y":0,"z":0,"Vp":0,"fpa":0,"phi":0,"psi":0}
 
 def op(agent, connected):
     pass
@@ -63,9 +63,9 @@ def maj_vitesse(agent, *larg):
 
 def maj_state_v(agent, *larg):
     global state_vector, alt_c, v_c_TAS ,state_vector_init
-    state_vector = {"x":float(larg[0]),"y":float(larg[1]),"z":float(larg[2]),"TAS":float(larg[3]),"fpa":(float(larg[4])),"psi":(float(larg[5])),"phi":(float(larg[6]))}
+    state_vector = {"x":float(larg[0]),"y":float(larg[1]),"z":float(larg[2]),"Vp":float(larg[3]),"fpa":(float(larg[4])),"psi":(float(larg[5])),"phi":(float(larg[6]))}
     alt_c =state_vector["z"]
-    v_c_TAS = state_vector["TAS"]
+    v_c_TAS = state_vector["Vp"]
     state_vector_init=True
     if cap_v :
         if v_mode=="Managed":
@@ -79,7 +79,6 @@ def maj_state_v(agent, *larg):
             capture_pente_managed()
     else:
         send() 
-    print(f"cap_v:{cap_v} v_mode:{v_mode} cap_pente:{cap_pente} alt_mode:{alt_mode}")
 
 
     
@@ -92,14 +91,14 @@ def capture_pente(agent=0, *larg):
         fpa_vz_c = float(larg[2])
     else:
         pass
-    if (abs(v_c_TAS-state_vector["TAS"])>epsilon or not state_vector_init or not limits_init or not v_lim_init ):
+    if (abs(v_c_TAS-state_vector["Vp"])>epsilon or not state_vector_init or not limits_init or not v_lim_init ):
         cap_pente = True
         send()
         return
         
     
     elif alt_mode == "Selected":
-        nz = ((alt_c-state_vector["z"])/state_vector["TAS"]*k11-state_vector["fpa"])*k22+np.cos(state_vector["fpa"])/np.cos(state_vector["phi"])
+        nz = ((alt_c-state_vector["z"])/state_vector["Vp"]*k11-state_vector["fpa"])*k22+np.cos(state_vector["fpa"])/np.cos(state_vector["phi"])
         nz = apply_lim(nz,nz_min,nz_max)
         send()
         cap_pente=False
@@ -109,7 +108,7 @@ def capture_pente(agent=0, *larg):
         send() 
         cap_pente= False
     elif alt_mode == 'VS':
-        nz = (((np.arcsin(fpa_vz_c/state_vector["TAS"]) - state_vector["fpa"])*k22) + np.cos(state_vector["fpa"]))/np.cos(state_vector["phi"])
+        nz = (((np.arcsin(fpa_vz_c/state_vector["Vp"]) - state_vector["fpa"])*k22) + np.cos(state_vector["fpa"]))/np.cos(state_vector["phi"])
         nz = apply_lim(nz,nz_min,nz_max)
         send()
         cap_pente= False
@@ -125,13 +124,13 @@ def capture_pente_managed(agent=0, *larg):
     else:
         pass
     epsilon = 1 #tolérance en m/s  
-    if (abs(v_c_TAS-state_vector["TAS"])>epsilon or not state_vector_init or not limits_init or not v_lim_init ):
+    if (abs(v_c_TAS-state_vector["Vp"])>epsilon or not state_vector_init or not limits_init or not v_lim_init ):
         cap_pente=True
         send()
         return
     elif alt_mode == "Managed":
 
-        nz = ((alt_c-state_vector["z"])/state_vector["TAS"]*k11-state_vector["fpa"])*k22+np.cos(state_vector["fpa"])/np.cos(state_vector["phi"])
+        nz = ((alt_c-state_vector["z"])/state_vector["Vp"]*k11-state_vector["fpa"])*k22+np.cos(state_vector["fpa"])/np.cos(state_vector["phi"])
         nz = apply_lim(nz,nz_min,nz_max)
         send()
         cap_pente = False
@@ -152,7 +151,7 @@ def capture_vitesse(agent=0, *larg):
         return
     
     if v_mode == "Selected":
-        nx = (apply_lim(v_c_TAS,v_lim[0],v_lim[1]) - state_vector["TAS"])*k11 + np.sin(state_vector["fpa"])
+        nx = (apply_lim(v_c_TAS,v_lim[0],v_lim[1]) - state_vector["Vp"])*k11 + np.sin(state_vector["fpa"])
         nx = apply_lim(nx,nx_min,nx_max)
         send()
         cap_v= False
@@ -162,7 +161,7 @@ def capture_vitesse(agent=0, *larg):
 def capture_vitesse_managed(agent=0, *larg):
     global v_c_TAS, alt_c, nx,cap_v
     if larg:
-        v_c_TAS = calculer_vitesse_TAS(float(larg[0]),state_vector["z"])
+        v_c_TAS = float(larg[0])
     else:
         pass
     epsilon = 2 #tolérance en m  
@@ -170,28 +169,28 @@ def capture_vitesse_managed(agent=0, *larg):
         cap_v =True
         send()
         return
-    nx = (v_c_TAS - state_vector["TAS"])*k11 + np.sin(state_vector["fpa"])
+    nx = (v_c_TAS - state_vector["Vp"])*k11 + np.sin(state_vector["fpa"])
     nx = apply_lim(nx,nx_min,nx_max)
     send()#pas nécessaire apply_lim car déjà verifier par le fgs
     cap_v=False
 
 def send():
     global nz,nx
-    #print("nz={}".format(nz),"nx={}".format(nx))
+    print("nz={}".format(nz),"nx={}".format(nx))
     time.sleep(1)
     IvySendMsg("APLongNzControl nz={}".format(nz))
     IvySendMsg("APLongNxControl nx={}".format(nx))
 
 app_n ="PAlong"
-ivy_bus ="127.255.255.255:2010"
+ivy_bus ="127.255.255.255:8000"
 IvyInit(app_n ,"Pa_long_ready" ,0 ,op ,cl )
 IvyStart(ivy_bus)
 time.sleep(1)
-IvyBindMsg(maj_state_v,"^StateVector x=(\S+) y=(\S+) z=(\S+) IAS=(\S+) fpa=(\S+) psi=(\S+) phi=(\S+)")
+IvyBindMsg(maj_state_v,"^StateVector x=(\S+) y=(\S+) z=(\S+) Vp=(\S+) fpa=(\S+) psi=(\S+) phi=(\S+)")
 IvyBindMsg(set_limits,'^LimitsNAP nx_neg_AP=(\S+) nx_pos_AP=(\S+) nz_neg_AP=(\S+) nz_pos_AP=(\S+)')
 IvyBindMsg(maj_vitesse, "^SpeedLimits vmin=(\S+) vmax=(\S+)")
 IvyBindMsg(capture_pente_managed,'^ManagedAlt alt=(\S+) Q=(\S+)')
 IvyBindMsg(capture_pente,'^FCUVertical Altitude=(\S+) Mode=(\S+) Val=(\S+)') ## val prend une Vz ou une FPA
 IvyBindMsg(capture_vitesse,'^FCUSpeedMach Mode=(\S+) Val=(\S+)')
-IvyBindMsg(capture_vitesse_managed, "^ManagedSpeed vi=(\S+)")
+IvyBindMsg(capture_vitesse_managed,"^ManagedSpeed vi=(\S+)")
 IvyMainLoop()

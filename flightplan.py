@@ -24,3 +24,13 @@ if __name__ == "__main__":
         old_pos_x, old_pos_y = next_pos_x, next_pos_y
     
     f.close()
+
+CFFVX,-4228,1374,-1,flyover
+CIITY,-9661,19808,-1,flyover
+BCEEE,14561,41618,-1,flyover
+GRTFL,81729,13107,-1,flyby
+BGGLO,67435,-33648,-1,flyover
+PYE,51399,-42537,-1,flyby
+VPSTB,32406,-25436,-1,flyby
+VPBCK,27255,-9584,-1,flyover
+OPLIE,18635,-658,-1,flyover

@@ -48,7 +48,6 @@ def roll_limits_AP(agent, *larg):
 def axis(agent, *larg):
     global axis_vector
     axis_vector = np.float_(larg)
-    print(magnetic_Declinaison_vector[0])
     if fcu_lat_vector[0] == 'SelectedHeading':
         capture_cap((float(fcu_lat_vector[1]) ) * deg2rad)
     elif fcu_lat_vector[0] == 'SelectedTrack':
